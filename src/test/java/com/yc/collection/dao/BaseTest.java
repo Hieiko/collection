@@ -52,6 +52,15 @@ public class BaseTest {
         fm.selectByTid(1);
         fm.selectByTid(0);
     }
-
+    @Test
+    public void test5(){
+        FavoriteBiz fb=new FavoriteBiz();
+        Favorite favorite=new Favorite();
+        favorite.setFlabel("Github");
+        favorite.setFurl("github.com");
+        favorite.setFdesc("代码网站");
+        favorite.setFtags("");
+        fb.addFavorite(favorite);
+    }
 
 }

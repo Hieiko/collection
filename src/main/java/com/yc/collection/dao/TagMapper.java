@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
+import java.util.List;
+
 public interface TagMapper {
     @Insert("insert into tag values(null,#{tname},1)")
     @Options(useGeneratedKeys = true
@@ -17,4 +19,7 @@ public interface TagMapper {
 
     @Select("select * from tag where tname=#{tname}")
     Tag selectByName(String tag);
+
+    @Select("select * from tag")
+    List<Tag> selectAll();
 }
