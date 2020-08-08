@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>添加收藏</title>
+    <script type="text/javascript" src="https://lib.baomitu.com/vue/2.6.11/vue.min.js"></script>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+</head>
+<body>
+<el-form id="app" ref="form" :model="form" label-width="80px" style="width: 900px;height: 900px">
+    <el-form-item label="名称">
+        <el-input v-model="form.web" style="width: 200px"></el-input>
+    </el-form-item>
+    <el-form-item label="链接">
+        <el-input placeholder="请输入内容" v-model="form.link">
+            <template slot="prepend">Http://</template>
+        </el-input>
+    </el-form-item>
+    <el-form-item label="标签">
+        <el-input v-model="form.tags" style="width: 200px"></el-input>
+        <el-tag
+                v-for="item in form.items"
+                :key="item.label"
+                :type="item.type"
+                effect="dark"
+                @click="switchTag(item.label)">
+            {{ item.label }}
+        </el-tag>
+    </el-form-item>
+    <!--        type 和 color 对标签进行样式选择-->
+    <el-form-item label="描述">
+        <el-input type="textarea" v-model="form.desc"></el-input>
+    </el-form-item>
+    <el-form-item>
+        <el-button type="primary" @click="insert()">立即创建</el-button>
+        <el-button>取消</el-button>
+    </el-form-item>
+</el-form>
+<script>
+    var vue=new Vue({
+        el:"#app",
+        data() {
+            return {
+                form: {
+                    //todo 深度监听绑定
+                    web: '',
+                    desc: '',
+                    link: '',
+                    tags: '',
+                    items: [
+                        { type: '', label: '教育' },
+                        { type: 'success', label: '生活' },
+                        { type: 'info', label: '科技' },
+                        { type: 'danger', label: '体育' },
+                        { type: 'warning', label: '美妆' }
+                    ]
+                },
+            }
+        },
+        methods: {
+           switchTag(label){
+               let a=this.form.tags.split(",");
+               console.log(a);
+               let b=label.split(",");
+               console.log(b)
+               if (this.form.tags==null||this.form.tags===''){
+                   this.form.tags=label
+               }else if (a.indexOf(label)!==-1){
+
+               }else{
+                   let values=Array.from(new Set([...a,...b]))
+                   console.log(values);
+                   this.form.tags=this.form.tags+","+values[values.length-1];
+               }
+           },
+           insert(){
+               axios({
+                   url:"addTag.do",
+                   params:{
+                       web: this.form.web,
+                       link: this.form.link,
+                       tags: this.form.tags,
+                       desc: this.form.desc
+                   }
+               }).then(res=>{
+                   if (res.data.Code===200){
+                       alert("ok")
+                       location.href="index.html"
+                   }else {
+                       alert(res.data.Msg)
+                   }
+               })
+           }
+        }
+    })
+</script>
+</body>
+</html>

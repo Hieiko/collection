@@ -1,9 +1,11 @@
 package com.yc.collection.web;
 
 import com.google.gson.Gson;
+import com.yc.collection.bean.Favorite;
 import com.yc.collection.dao.FavoriteMapper;
 import com.yc.collection.dao.TagMapper;
 import com.yc.collection.util.MyBatisHelper;
+import com.yc.collection.util.Result;
 import org.apache.ibatis.session.SqlSession;
 
 import javax.servlet.ServletException;
@@ -12,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet("/queryFavs.do")
 public class QueryFavsServlet extends HttpServlet {
@@ -32,8 +35,9 @@ public class QueryFavsServlet extends HttpServlet {
         }else {
             iTid=Integer.valueOf(sTid);
         }
+        List<Favorite>  data = tm.selectByTid(iTid);
         Gson gson=new Gson();
-        String json =gson.toJson(tm.selectByTid(iTid));
+        String json =gson.toJson(new Result<>().setCode(200).setData(data));
         System.out.println(json);
         response.getWriter().append(json);
     }

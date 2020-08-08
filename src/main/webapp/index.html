@@ -33,7 +33,7 @@
 				 
 				
 				<table class="labels_table" cellspacing="0" cellpadding="0" border="0">
-					<tr><td><a href="#" onclick="add();" style="font-weight:bold;">添加书签</a></td></tr>
+					<tr><td><a href="addFavorite.html" style="font-weight:bold;">添加书签</a></td></tr>
 					<tr>
 						<td class="selected_label">
 							<a href="#" @click="lookup(0)">全部</a>
@@ -52,7 +52,7 @@
 
 					<tr>
 						<td>
-							<a style="font-weight:bold;" href="fav.do?op=toCloud">云图</a>
+							<a style="font-weight:bold;"  @click="showYun">云图</a>
 						</td>
 					</tr>
 				</table>
@@ -62,7 +62,7 @@
 			<!-- 右边fav内容 -->
 				<div class="content_links">
 				
-				<div style="padding:6px 10px;" v-for="f in favs">
+				<div style="padding:6px 10px;" v-for="f in favs" v-show="show">
 					<div>
 						<a :href="'http://'+f.furl"
 						   style="color:blue;font-size:18px;" target="_blank">
@@ -75,7 +75,14 @@
 					<div style="color:green;font-size:14px;">
 						http://{{f.furl}}
 					</div>
-				</div>	
+				</div>
+
+					<div v-show="!show"  style="padding: 6px 10px;" >
+					<a id="font" v-for="t in tags"  @click="lookup(t.tid)"
+					   :style="{fontWeight:showFontW(t.tcount),fontSize:showFontS(t.tcount)}"
+					    target="_blank" >{{t.tname}}</a>
+
+					</div>
 
 				
 				</div>
@@ -87,19 +94,34 @@
 				el:"#app",
 				data:{
 					tags:[],
-					favs:[]
+					favs:[],
+					show:true
 				},
 				created :function () {
 					axios.get("queryTag.do").then(res=>{
 						this.tags=res.data;
+						console.log(res.data)
 					})
 				},
 				methods:{
 					lookup(tid){
+						this.show=true;
 						axios.get("queryFavs.do?tid="+ tid).then(res=>{
-							this.favs=res.data;
+							this.favs=res.data.Data;
+							console.log(res.data.Data)
 						})
-					}
+					},
+					showYun(){
+						this.show=false;
+					},
+					showFontW(tcount){
+						var fSize=500*tcount;
+						return  fSize;
+					},
+					showFontS(tcount){
+						var fSize=12*tcount;
+						return  fSize+"px";
+					},
 				}
 			})
 		</script>
